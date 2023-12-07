@@ -1,11 +1,22 @@
 import React from "react";
-import { SearchBox, Hits, InstantSearch } from "react-instantsearch";
+import { SearchBox, Hits, InstantSearch, Configure, Pagination } from "react-instantsearch";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 
 const API_KEY = "xyz";
 const HOST = "localhost";
 const PORT = 8108;
 const PROTOCOL = "http"
+
+function Hit({ hit }) {
+  return (
+    <article>
+      <img src={hit.image_url} alt={hit.exercise_name} />
+      <p>{hit.exercise_name}</p>
+      {/* <h1>{hit.name}</h1> */}
+      {/* <p>${hit.price}</p> */}
+    </article>
+  );
+}
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -23,16 +34,19 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   //  So you can pass any parameters supported by the search endpoint below.
   //  query_by is required.
   additionalSearchParameters: {
-    query_by: "exercise_name,description,associated_injury,associated_muscle",
+    query_by: "exercise_name,description,associated_injuries,associated_muscles",
   },
 });
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 
+
 export default function Exercises() {
   return (
     <InstantSearch indexName="exercises" searchClient={searchClient}>
+      <Configure hitsPerPage={20} /> {/* Set the number of hits you want per page */}
       <SearchBox />
-      <Hits />
+      <Hits hitComponent={Hit} />
+      <Pagination />
     </InstantSearch>
   );
 }

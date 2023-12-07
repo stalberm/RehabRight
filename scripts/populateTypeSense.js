@@ -26,8 +26,8 @@ const createCollection = async () => {
       { name: 'exercise_name', type: 'string', sort: true},
       { name: 'description', type: 'string' },
       { name: 'image_url', type: 'string' },
-      { name: 'associated_injury', type: 'string[]', facet: true },
-      { name: 'associated_muscle', type: 'string[]', facet: true },
+      { name: 'associated_injuries', type: 'string[]', facet: true },
+      { name: 'associated_muscles', type: 'string[]', facet: true },
     ],
     default_sorting_field: "exercise_name"
   };
@@ -42,7 +42,7 @@ const createCollection = async () => {
 
 const importDocuments = async () => {
   try {
-    const exerciseJson = await fs.readFile('./scripts/tmp/exercises.jsonl');
+    const exerciseJson = await fs.readFile('./scripts/tmp/exercises.jsonl', 'utf8');
     await client.collections('exercises').documents().import(exerciseJson);
   } catch (error) {
     console.error('Error importing documents:', error);
