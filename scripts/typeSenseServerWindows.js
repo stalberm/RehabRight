@@ -1,7 +1,7 @@
 const { exec } = require("child_process");
 const path = require("path");
 
-const API_KEY = process.env.TYPESENSE_ADMIN_API_KEY;
+const API_KEY = "xyz";
 const PORT = 8108;
 
 const currentDir = path.resolve(__dirname, "typesense-data");
