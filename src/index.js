@@ -9,18 +9,48 @@ import Home from './routes/Home';
 import Programs from './routes/Programs';
 import Clients from './routes/Clients';
 import Exercises from './routes/Exercises';
+import { InstantSearch } from 'react-instantsearch';
+import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
+
+
+const API_KEY = "xyz";
+const HOST = "localhost";
+const PORT = 8108;
+const PROTOCOL = "http"
+
+const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+  server: {
+    apiKey: API_KEY,
+    nodes: [
+      {
+        host: HOST,
+        port: PORT,
+        protocol: PROTOCOL,
+      },
+    ],
+    cacheSearchResultsForSeconds: 2 * 60,
+  },
+
+  additionalSearchParameters: {
+    query_by: "exercise_name,description,associated_injuries,associated_muscles",
+  },
+});
+const searchClient = typesenseInstantsearchAdapter.searchClient;
+
 
 const App = () => {
   return (
       <Router>
         <div className="d-flex flex-column min-vh-100">
           <Navbar />
+          <InstantSearch indexName="exercises" searchClient={searchClient}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/exercises" element={<Exercises />} />
           </Routes>
+          </InstantSearch>
         </div>
       </Router>
   );

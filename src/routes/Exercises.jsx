@@ -1,52 +1,101 @@
 import React from "react";
-import { SearchBox, Hits, InstantSearch, Configure, Pagination } from "react-instantsearch";
-import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
+import { Configure, usePagination, useHits, useSearchBox } from "react-instantsearch";
 
-const API_KEY = "xyz";
-const HOST = "localhost";
-const PORT = 8108;
-const PROTOCOL = "http"
 
 function Hit({ hit }) {
   return (
-    <article>
-      <img src={hit.image_url} alt={hit.exercise_name} />
-      <p>{hit.exercise_name}</p>
-      {/* <h1>{hit.name}</h1> */}
-      {/* <p>${hit.price}</p> */}
-    </article>
+    <div className="card">
+      <img src={hit.image_url} alt={hit.exercise_name} className="card-img-top" />
+      <div className="card-body">
+        <h5 className="card-title">{hit.exercise_name}</h5>
+        <p className="card-text">{hit.description}</p>
+      </div>
+    </div>
   );
 }
 
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: {
-    apiKey: API_KEY, // Be sure to use an API key that only allows search operations
-    nodes: [
-      {
-        host: HOST,
-        port: PORT,
-        protocol: PROTOCOL,
-      },
-    ],
-    cacheSearchResultsForSeconds: 2 * 60, // Cache search results from server. Defaults to 2 minutes. Set to 0 to disable caching.
-  },
-  // The following parameters are directly passed to Typesense's search API endpoint.
-  //  So you can pass any parameters supported by the search endpoint below.
-  //  query_by is required.
-  additionalSearchParameters: {
-    query_by: "exercise_name,description,associated_injuries,associated_muscles",
-  },
-});
-const searchClient = typesenseInstantsearchAdapter.searchClient;
+function CustomSearchBox() {
+  const { query, refine } = useSearchBox();
 
+  return (
+    <div className="m-4">
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => refine(e.target.value)}
+        placeholder="Search Exercises..."
+        className="form-control"
+      />
+    </div>
+  );
+}
+
+function CustomPagination() {
+  const {
+    createURL,
+    refine,
+    currentRefinement,
+    nbPages,
+    isFirstPage,
+    isLastPage,
+  } = usePagination();
+
+  const previousPageIndex = currentRefinement - 1;
+  const nextPageIndex = currentRefinement + 1;
+
+  return (
+    <nav>
+      <ul className="pagination">
+        <li className={`page-item ${isFirstPage ? 'disabled' : ''}`}>
+          <a
+            className="page-link"
+            href={createURL(previousPageIndex)}
+            onClick={(e) => {
+              e.preventDefault();
+              !isFirstPage && refine(previousPageIndex);
+            }}
+          >
+            Prev
+          </a>
+        </li>
+        <li className="page-item">
+          <span className="page-link">
+            {currentRefinement + 1} of {nbPages}
+          </span>
+        </li>
+        <li className={`page-item ${isLastPage ? 'disabled' : ''}`}>
+          <a
+            className="page-link"
+            href={createURL(nextPageIndex)}
+            onClick={(e) => {
+              e.preventDefault();
+              !isLastPage && refine(nextPageIndex);
+            }}
+          >
+            Next
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
+}
 
 export default function Exercises() {
+
+  const { hits } = useHits();
+
   return (
-    <InstantSearch indexName="exercises" searchClient={searchClient}>
-      <Configure hitsPerPage={20} /> {/* Set the number of hits you want per page */}
-      <SearchBox />
-      <Hits hitComponent={Hit} />
-      <Pagination />
-    </InstantSearch>
+    <div>
+      <Configure hitsPerPage={12} />
+      <CustomSearchBox />
+      <div className="row">
+        {hits.map((hit) => (
+          <div key={hit.objectID} className="col-md-2 mb-4">
+            <Hit hit={hit} />
+          </div>
+        ))}
+      </div>
+      <CustomPagination />
+    </div>
   );
 }
