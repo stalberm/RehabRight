@@ -1,14 +1,27 @@
 import React from "react";
 import { Configure, usePagination, useHits, useSearchBox } from "react-instantsearch";
+import { Link } from 'react-router-dom';
 
-
-function Hit({ hit }) {
+function Hit({ hit, addExercise }) {
   return (
     <div className="card">
       <img src={hit.image_url} alt={hit.exercise_name} className="card-img-top" />
       <div className="card-body">
         <h5 className="card-title">{hit.exercise_name}</h5>
         <p className="card-text">{hit.description}</p>
+      </div>
+      <div className="card-footer">
+        <Link to="/programs/create">
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              addExercise(hit);
+
+            }}
+          >
+            Add exercise
+          </button>
+        </Link>
       </div>
     </div>
   );
@@ -80,7 +93,7 @@ function CustomPagination() {
   );
 }
 
-export default function Exercises() {
+export default function Exercises({ addExercise }) {
 
   const { hits } = useHits();
 
@@ -91,7 +104,7 @@ export default function Exercises() {
       <div className="row">
         {hits.map((hit) => (
           <div key={hit.objectID} className="col-md-2 mb-4">
-            <Hit hit={hit} />
+            <Hit hit={hit} addExercise={addExercise} />
           </div>
         ))}
       </div>
