@@ -31,29 +31,33 @@ function ExerciseEntry({ exercise }) {
   const incrementReps = () => setReps(reps + 1);
   const decrementReps = () => setReps(reps > 0 ? reps -1 : 0);
 
-  const incrememntSets = () => setSets(sets + 1);
+  const incrementSets = () => setSets(sets + 1);
   const decrementSets = () => setSets(sets > 0 ? sets - 1 : 0);
 
   return (
     <div className="card mb-4" style={{ height: '25vh' }}>
       <div className="row g-0 align-items-center h-100">
         <div className="col-md-4 h-100">
-          <img
-            src={exercise.image_url}
-            alt={exercise.exercise_name}
-            className="h-100"
-          />
+          <img src={exercise.image_url} alt={exercise.exercise_name} className="h-100" />
         </div>
-        <div className="col-md-4 d-flex flex-column align-items-center">
-          <button onClick={incrementReps} className="btn btn-primary mb-2" style={{ width: '50px', height: '50px', flex: '1' }}>+</button>
-          <div>Reps: {reps}</div>
-          <button onClick={decrementReps} className="btn btn-primary" style={{ width: '50px', height: '50px', flex: '1' }}>-</button>
-        </div>
-        <div className="col-md-4 d-flex flex-column align-items-center">
-          <button onClick={incrememntSets} className="btn btn-primary mb-2" style={{ width: '50px', height: '50px', flex: '1' }}>+</button>
-          <div>Sets: {sets}</div>
-          <button onClick={decrementSets} className="btn btn-primary mb-2" style={{ width: '50px', height: '50px', flex: '1' }}>-</button>
-          <button className="btn btn-danger" style={{ width: '100px', height: '50px', flex: '1' }}>Delete</button>
+        <div className="col-md-8">
+          <div className="card-body">
+            <h5 className="card-title">{exercise.exercise_name}</h5>
+            <p className="card-text">{exercise.description}</p>
+            <div className="d-flex justify-content-between">
+              <div>
+                <button onClick={incrementReps} className="btn btn-primary">+</button>
+                <span> Reps: {reps} </span>
+                <button onClick={decrementReps} className="btn btn-primary">-</button>
+              </div>
+              <div>
+                <button onClick={incrementSets} className="btn btn-primary">+</button>
+                <span> Sets: {sets} </span>
+                <button onClick={decrementSets} className="btn btn-primary">-</button>
+              </div>
+              <button className="btn btn-danger">Delete</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
