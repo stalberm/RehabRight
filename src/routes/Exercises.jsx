@@ -9,6 +9,8 @@ function Hit({ hit, addExercise }) {
       <div className="card-body">
         <h5 className="card-title">{hit.exercise_name}</h5>
         <p className="card-text">{hit.description}</p>
+        <u>Applicable Injuries:</u>
+        <p className="card-text">{hit.associated_injuries.join(', ')}</p>
       </div>
       <div className="card-footer">
         <Link to="/programs/create">
